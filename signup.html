@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+  
+  <header class="header sticky-top bg-light p-3 shadow-sm">
+    <div class="container d-flex justify-content-between">
+      <nav>
+        <a href="index.html" class="btn btn-custom">Home</a>
+        <a href="signin.html" class="btn btn-custom">Sign In</a>
+
+      </nav>
+    </div>
+  </header>
+  
+  <main class="container mt-4">
+    <h2 class="text-center">Sign Up</h2>
+    <p class="text-center">Choose your account type to create an account.</p>
+    
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+        <div class="card p-4">
+          <h3 class="text-center">User Sign Up</h3>
+          <form id="user-signup-form">
+            <div class="mb-3">
+              <label for="user-name" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="user-name" required>
+            </div>
+            <div class="mb-3">
+              <label for="user-email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="user-email" required>
+            </div>
+            <div class="mb-3">
+              <label for="user-password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="user-password" required>
+            </div>
+            <button type="submit" class="btn btn-custom w-100">Sign Up</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="col-md-5">
+        <div class="card p-4">
+          <h3 class="text-center">Restaurant Owner Sign Up</h3>
+          <form id="restaurant-signup-form">
+            <div class="mb-3">
+              <label for="restaurant-name" class="form-label">Restaurant Name</label>
+              <input type="text" class="form-control" id="restaurant-name" required>
+            </div>
+            <div class="mb-3">
+              <label for="owner-email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="owner-email" required>
+            </div>
+            <div class="mb-3">
+              <label for="owner-password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="owner-password" required>
+            </div>
+            <button type="submit" class="btn btn-custom w-100">Sign Up</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function registerUser(formId, role) {
+      document.getElementById(formId).addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        let name = document.getElementById(formId === 'user-signup-form' ? "user-name" : "restaurant-name").value.trim();
+        let email = document.getElementById(formId === 'user-signup-form' ? "user-email" : "owner-email").value.trim().toLowerCase();
+        let password = document.getElementById(formId === 'user-signup-form' ? "user-password" : "owner-password").value.trim();
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+
+        if (users.some(user => user.email === email)) {
+          alert("This email is already registered. Please sign in.");
+          return;
+        }
+
+        users.push({ name, email, password, role });
+        localStorage.setItem("users", JSON.stringify(users));
+
+        alert(`${role === "owner" ? "Restaurant Owner" : "User"} account created successfully!`);
+        document.getElementById("user-name").value = "";
+      document.getElementById("user-email").value = "";
+      document.getElementById("user-password").value = "";
+        window.location.href = 'signup.html';
+      });
+    }
+
+    registerUser('user-signup-form', 'user');
+    registerUser('restaurant-signup-form', 'owner');
+  </script>
+
+  <!---  For restaurant Owner-->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let user = JSON.parse(localStorage.getItem("loggedInUser"));
+    let userInfoDiv = document.getElementById("user-info");
+
+    if (user) {
+      let dashboardLink = user.role === "owner" ? `<a href="restaurant-dashboard.html" class="btn btn-warning">Restaurant Dashboard</a>` : "";
+      
+      userInfoDiv.innerHTML = `
+        ${dashboardLink}
+        <span>Hi, ${user.name}</span>
+        <button id="logout-btn" class="btn btn-outline-danger ms-3">Logout</button>
+      `;
+
+      document.getElementById("logout-btn").addEventListener("click", function () {
+        localStorage.removeItem("loggedInUser");
+        window.location.reload();
+      });
+    } else {
+      userInfoDiv.innerHTML = `
+        <a class="btn-getstarted" href="signin.html" id="signin-btn">Sign In</a>
+      `;
+    }
+  });
+</script>
+  
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

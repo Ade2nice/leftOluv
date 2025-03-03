@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In</title>
+  <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+  
+  <header class="header sticky-top bg-light p-3 shadow-sm">
+    <div class="container d-flex justify-content-between">
+      <nav>
+        <a href="index.html" class="btn btn-custom">Home</a>
+      </nav>
+    </div>
+  </header>
+  
+  <main class="container mt-4">
+    <h5 class="text-center">Welcome back! Please enter your details to log in</h5>
+    
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card p-4">
+          <h5 class="text-center">Login</h5>
+          <form id="signin-form">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-custom w-100">Sign In</button>
+          </form>
+          <p class="text-center mt-3">Don't have an account? <a href="signup.html">Sign Up</a></p>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('signin-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      let email = document.getElementById("email").value.trim().toLowerCase();
+      let password = document.getElementById("password").value.trim();
+
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+
+      let user = users.find(u => u.email === email && u.password === password);
+
+      if (user) {
+        alert(`Success! Welcome, ${user.role === "owner" ? "Restaurant Owner" : "User"}!`);
+        localStorage.setItem("loggedInUser", JSON.stringify(user));
+        window.location.href = "index.html";
+      } else {
+        alert("Error: Invalid email or password.");
+      }
+    });
+  </script>
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
