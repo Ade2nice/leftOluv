@@ -6,10 +6,180 @@
   <title>Shopping Cart</title>
   <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="../assets/css/main.css">
-</head>
-<body>
+
+  <style>
+    /* ✅ Properly align cart items */
+.cart-item-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* ✅ Name column on the left */
+.cart-item-details {
+    flex: 2;
+    text-align: left;
+}
+
+/* ✅ Center Quantity Controls */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ✅ Price Column Centered */
+.cart-item-price {
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* ✅ Remove Button Aligned Right */
+/* ✅ Remove Button Should Not Stretch */
+.remove-item {
+    background-color: #ffc107;
+    color: black;
+    border: none;
+    padding: 5px 12px; /* Adjust padding for better size */
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    width: auto; /* ✅ Prevent stretching */
+    min-width: 80px; /* ✅ Keep a reasonable button size */
+    text-align: center;
+
+    .quantity-controls .decrease {
+    background-color: #f8d7da; /* Soft Red */
+    color: #f8d7da; /* Dark Red Text */
+    border: 1px solid #f5c6cb;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    min-width: 35px;
+    height: 35px;
+    transition: background 0.3s ease;
+}
+
+.quantity-controls .decrease:hover {
+    background-color: #f1b0b7; /* Slightly Darker Red */
+}
+
+/* ✅ Styling for Increase (+) Button (Lighter Green) */
+.quantity-controls .increase {
+    background-color: #d4edda; /* Soft Green */
+    color: #155724; /* Dark Green Text */
+    border: 1px solid #c3e6cb;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    min-width: 35px;
+    height: 35px;
+    transition: background 0.3s ease;
+}
+
+.quantity-controls .increase:hover {
+    background-color: #b7e1c5; /* Slightly Darker Green */
+}
+}
+
+
+
+  </style>
+
+  <!--
+   <style>
+  #cart-items {
+    text-align: center;
+}
+
+/* ✅ Make Cart List Items Consistent */
+
+.list-group-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid #ddd;
+}
+
+/* ✅ Styling for Quantity Controls */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-controls button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    min-width: 35px;
+    height: 35px;
+    transition: background 0.3s ease;
+}
+
+.quantity-controls button:hover {
+    background-color: #b02a37;
+}
+
+/* ✅ Ensuring Quantity Count Stays Properly Sized */
+.quantity-controls span {
+    min-width: 30px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* ✅ Styling for Remove Button */
+.remove-item {
+    background-color: #ffc107;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.remove-item:hover {
+    background-color: #e0a800;
+}
+
+/* ✅ Undo Message Styling */
+.undo-message {
+    display: none;
+    color: red;
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* ✅ Ensure Cart is Centered on the Page */
+.container {
+    max-width: 800px;
+}
+  </style>
+  -->
+ 
+
+
+
+
 
  
+</head>
+<body>
 
   <header class="header sticky-top bg-light p-3 shadow-sm">
     <div class="container d-flex justify-content-between">
@@ -18,7 +188,6 @@
   </header>
 
   <main class="container mt-4">
-
     <!-- Empty Cart Message -->
     <div id="cart-container" class="text-center">
       <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png" alt="Empty Cart" class="img-fluid" width="200">
@@ -27,77 +196,28 @@
       <a href="../index.html#about" class="btn btn-custom">Browse Leftover Deals</a>
     </div>
 
-    <!-- Cart Items (Initially Hidden) -->
+    <!-- Cart Items -->
     <div id="cart-items" class="mt-4" style="display: none;">
       <h3>Cart Items</h3>
-      <ul id="cart-list" class="list-group"></ul>
+      <ul id="cart-list" class="list-group">
+        
+        <!-- Items will be dynamically added here -->
+      </ul>
+      
       <div class="mt-3">
         <strong>Total: $<span id="cart-total">0.00</span></strong>
       </div>
       <a href="checkout.html" id="checkout-btn" class="btn btn-danger">Proceed to Checkout</a>
-
-
-      <!-- <a href="checkout.html" button id="checkout-btn" class="btn btn-custom">Proceed to Checkout</button> -->
     </div>
 
+    <!-- Undo Section (For Recovering Removed Items) -->
+  
   </main>
 
-  <!-- JavaScript for Cart Logic -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        let cartContainer = document.getElementById("cart-container");
-        let cartItemsContainer = document.getElementById("cart-items");
-        let cartList = document.getElementById("cart-list");
-        let cartTotal = document.getElementById("cart-total");
-
-        if (cart.length === 0) {
-            cartContainer.style.display = "block";
-            cartItemsContainer.style.display = "none";
-        } else {
-            cartContainer.style.display = "none";
-            cartItemsContainer.style.display = "block";
-
-            let total = 0;
-            cartList.innerHTML = ""; 
-
-            cart.forEach(item => {
-                let listItem = document.createElement("li");
-                listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
-                listItem.innerHTML = `
-                    ${item.name} (x${item.quantity})
-                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
-                    <button class="btn btn-sm btn-danger remove-item" data-id="${item.id}">Remove</button>
-                `;
-                cartList.appendChild(listItem);
-                total += item.price * item.quantity;
-            });
-
-            cartTotal.innerText = total.toFixed(2);
-
-            // Remove item from cart
-            document.querySelectorAll(".remove-item").forEach(button => {
-                button.addEventListener("click", function () {
-                    let itemId = this.getAttribute("data-id");
-                    cart = cart.filter(product => product.id !== itemId);
-                    localStorage.setItem("cart", JSON.stringify(cart));
-                    window.location.reload();
-                });
-            });
-        }
-
-        document.getElementById("checkout-btn").addEventListener("click", function () {
-            alert("Proceeding to checkout...");
-            // Add checkout functionality here
-        });
-    });
-  </script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/navbar.js"></script>
-
+    <script src="../assets/js/cart.js"></script>
 
 </body>
 </html>
-

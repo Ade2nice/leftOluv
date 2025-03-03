@@ -6,6 +6,17 @@
   <title>Sign Up</title>
   <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    .error {
+      color: red;
+      font-size: 0.875rem;
+      margin-top: 5px;
+      display: none;
+    }
+    .error-border {
+      border: 2px solid red;
+    }
+  </style>
 </head>
 <body>
   
@@ -14,7 +25,6 @@
       <nav>
         <a href="index.html" class="btn btn-custom">Home</a>
         <a href="signin.html" class="btn btn-custom">Sign In</a>
-
       </nav>
     </div>
   </header>
@@ -27,18 +37,21 @@
       <div class="col-md-5">
         <div class="card p-4">
           <h3 class="text-center">User Sign Up</h3>
-          <form id="user-signup-form">
+          <form id="user-signup-form" novalidate>
             <div class="mb-3">
               <label for="user-name" class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="user-name" required>
+              <input type="text" class="form-control" id="user-name">
+              <div class="error" id="user-name-error">Full Name is required.</div>
             </div>
             <div class="mb-3">
               <label for="user-email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="user-email" required>
+              <input type="email" class="form-control" id="user-email">
+              <div class="error" id="user-email-error">Valid email is required.</div>
             </div>
             <div class="mb-3">
               <label for="user-password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="user-password" required>
+              <input type="password" class="form-control" id="user-password">
+              <div class="error" id="user-password-error">Password must be at least 6 characters.</div>
             </div>
             <button type="submit" class="btn btn-custom w-100">Sign Up</button>
           </form>
@@ -48,18 +61,21 @@
       <div class="col-md-5">
         <div class="card p-4">
           <h3 class="text-center">Restaurant Owner Sign Up</h3>
-          <form id="restaurant-signup-form">
+          <form id="restaurant-signup-form" novalidate>
             <div class="mb-3">
               <label for="restaurant-name" class="form-label">Restaurant Name</label>
-              <input type="text" class="form-control" id="restaurant-name" required>
+              <input type="text" class="form-control" id="restaurant-name">
+              <div class="error" id="restaurant-name-error">Restaurant Name is required.</div>
             </div>
             <div class="mb-3">
               <label for="owner-email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="owner-email" required>
+              <input type="email" class="form-control" id="owner-email">
+              <div class="error" id="owner-email-error">Valid email is required.</div>
             </div>
             <div class="mb-3">
               <label for="owner-password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="owner-password" required>
+              <input type="password" class="form-control" id="owner-password">
+              <div class="error" id="owner-password-error">Password must be at least 6 characters.</div>
             </div>
             <button type="submit" class="btn btn-custom w-100">Sign Up</button>
           </form>
@@ -73,9 +89,50 @@
       document.getElementById(formId).addEventListener('submit', function(event) {
         event.preventDefault();
 
-        let name = document.getElementById(formId === 'user-signup-form' ? "user-name" : "restaurant-name").value.trim();
-        let email = document.getElementById(formId === 'user-signup-form' ? "user-email" : "owner-email").value.trim().toLowerCase();
-        let password = document.getElementById(formId === 'user-signup-form' ? "user-password" : "owner-password").value.trim();
+        let nameField = document.getElementById(formId === 'user-signup-form' ? "user-name" : "restaurant-name");
+        let emailField = document.getElementById(formId === 'user-signup-form' ? "user-email" : "owner-email");
+        let passwordField = document.getElementById(formId === 'user-signup-form' ? "user-password" : "owner-password");
+
+        let name = nameField.value.trim();
+        let email = emailField.value.trim().toLowerCase();
+        let password = passwordField.value.trim();
+
+        let nameError = document.getElementById(formId === 'user-signup-form' ? "user-name-error" : "restaurant-name-error");
+        let emailError = document.getElementById(formId === 'user-signup-form' ? "user-email-error" : "owner-email-error");
+        let passwordError = document.getElementById(formId === 'user-signup-form' ? "user-password-error" : "owner-password-error");
+
+        let isValid = true;
+
+        // Clear previous errors
+        nameField.classList.remove("error-border");
+        emailField.classList.remove("error-border");
+        passwordField.classList.remove("error-border");
+        nameError.style.display = "none";
+        emailError.style.display = "none";
+        passwordError.style.display = "none";
+
+        // Name Validation
+        if (!name) {
+          nameError.style.display = "block";
+          nameField.classList.add("error-border");
+          isValid = false;
+        }
+
+        // Email Validation
+        if (!email || !email.includes("@")) {
+          emailError.style.display = "block";
+          emailField.classList.add("error-border");
+          isValid = false;
+        }
+
+        // Password Validation
+        if (!password || password.length < 6) {
+          passwordError.style.display = "block";
+          passwordField.classList.add("error-border");
+          isValid = false;
+        }
+
+        if (!isValid) return;
 
         let users = JSON.parse(localStorage.getItem("users")) || [];
 
@@ -88,10 +145,7 @@
         localStorage.setItem("users", JSON.stringify(users));
 
         alert(`${role === "owner" ? "Restaurant Owner" : "User"} account created successfully!`);
-        document.getElementById("user-name").value = "";
-      document.getElementById("user-email").value = "";
-      document.getElementById("user-password").value = "";
-        window.location.href = 'signup.html';
+        window.location.href = 'signin.html';
       });
     }
 
@@ -99,34 +153,6 @@
     registerUser('restaurant-signup-form', 'owner');
   </script>
 
-  <!---  For restaurant Owner-->
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    let user = JSON.parse(localStorage.getItem("loggedInUser"));
-    let userInfoDiv = document.getElementById("user-info");
-
-    if (user) {
-      let dashboardLink = user.role === "owner" ? `<a href="restaurant-dashboard.html" class="btn btn-warning">Restaurant Dashboard</a>` : "";
-      
-      userInfoDiv.innerHTML = `
-        ${dashboardLink}
-        <span>Hi, ${user.name}</span>
-        <button id="logout-btn" class="btn btn-outline-danger ms-3">Logout</button>
-      `;
-
-      document.getElementById("logout-btn").addEventListener("click", function () {
-        localStorage.removeItem("loggedInUser");
-        window.location.reload();
-      });
-    } else {
-      userInfoDiv.innerHTML = `
-        <a class="btn-getstarted" href="signin.html" id="signin-btn">Sign In</a>
-      `;
-    }
-  });
-</script>
-  
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1894,4 +1894,70 @@ section,
     z-index: 999;
   }
   /* ... other styles ... */
+
+
+  /* cart */
+ /* ✅ Ensure Cart Items are in Proper Layout */
+.cart-item-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* ✅ Ensure Cart Details Align Left */
+.cart-item-details {
+  flex: 1;
+  text-align: left;
+}
+
+/* ✅ Ensure Price is Aligned Right */
+.cart-item-price {
+  min-width: 80px;
+  text-align: right;
+  font-weight: bold;
+}
+
+/* ✅ Ensure Buttons Stay in Place */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ✅ Buttons Styling */
+.quantity-controls button {
+  background-color: #eea3aa;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  min-width: 35px;
+  height: 35px;
+  transition: background 0.3s ease;
+}
+
+.quantity-controls button:hover {
+  background-color: #b02a37;
+}
+
+/* ✅ Remove Button Styling */
+.remove-item {
+  background-color: #ffc107;
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.remove-item:hover {
+  background-color: #e0a800;
+}
+
+/*Cart end here*/
 }
